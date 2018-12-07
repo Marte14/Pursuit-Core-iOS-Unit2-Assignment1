@@ -18,7 +18,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var winsTrackerPlayer1: UILabel!
     @IBOutlet weak var winsTrackerPlayer2: UILabel!
-    
+    var p1Wins = 0
+    var p2Wins = 0
     
     //keep track of the turns (players)😺
     var playerTurn = Player.player1 // instance of enum
@@ -44,39 +45,51 @@ class ViewController: UIViewController {
             //change the image to x😺
             sender.setImage(UIImage(named: "x"), for: .normal)
             sender.isEnabled = false
+            
             //change label to player 2😺
             whosTurnNow.text = "Player 2"
             
             //register player image in the buttons col+row
-            //save x into the array as per its col and row index numbers
-            //id which button pressed gamebutton[0][]
-            //i have access to gameButton members it is sender.row and sender.col
-            //append?
-            //fetch the id
-            
-            gameBoardMatrix.insert(["x"], at: sender.col)
-            print(gameBoardMatrix)
+            gameBoardMatrix[sender.row][sender.col] = "x"
             
         case .player2:
             //change the image to o😺
             sender.setImage(UIImage(named: "o"), for: .normal)
             sender.isEnabled = false
+            
+            //register player image in the buttons col+row
+            gameBoardMatrix[sender.row][sender.col] = "o"
+            
             //change label to player 1😺
             whosTurnNow.text = "Player 1"
-            
-        //register player image in the buttons col+row
-            //gameBoardMatrix.insert(["o"], at: sender.col)
-            sender.
-            gameBoardMatrix.append(sender.row)
-            print(gameBoardMatrix)
         }
         
-        //method to check whether a player wins ***hardest***(last)
-            //if someone wins / draw
-                //1) change label to winning message
-                //2) increase the appropriate player score by 1
-                //3) disable all buttons
+        if checkForWins() {
+            switch playerTurn {
+            case .player1:
+                whosTurnNow.text = "Player 1 has Won"
+                p1Wins += 1
+                winsTrackerPlayer1.text = "P1 Wins: \(p1Wins)"
+                for button in gameButtons{
+                    button.isEnabled = false
+                }
+            case .player2:
+                whosTurnNow.text = "Player 2 has Won"
+                p2Wins += 1
+                winsTrackerPlayer2.text = "P2 Wins: \(p2Wins)"
+                for button in gameButtons{
+                    button.isEnabled = false
+                }
+            }
+        }
+        //check if the player wins :
+            //if someone wins
+                //1) change label to winning message 😺
+                //2) increase the appropriate player score by 1 😺
+                //3) disable all buttons 😺
         
+        
+        print(gameBoardMatrix)
         playerTurn.switchPlayer()
         print("Switched to \"\(playerTurn)\"")
     }
@@ -96,6 +109,17 @@ class ViewController: UIViewController {
         gameBoardMatrix = [["","",""],
                            ["","",""],
                            ["","",""]]
+         print(gameBoardMatrix)
+    }
+   
+    
+    func checkForWins() -> Bool {
+        //iterate through matrix inner arrays for 3 consecutive x or o
+//        for _ in gameBoardMatrix[sender.row][sender.col] {
+//            if gameBoardMatrix[sender.row][sender.col]{
+//
+//            }
+        
     }
     
 }
