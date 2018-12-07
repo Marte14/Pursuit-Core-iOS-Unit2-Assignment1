@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var winsTrackerPlayer1: UILabel!
     @IBOutlet weak var winsTrackerPlayer2: UILabel!
+    
     var p1Wins = 0
     var p2Wins = 0
     
@@ -38,10 +39,19 @@ class ViewController: UIViewController {
         whosTurnNow.text = "Player 1"
     }
     
+    var turnPassed = 0 {
+        didSet {
+            if turnPassed == 9 {
+                whosTurnNow.text = "It's a Draw!!!"
+            }
+        }
+    }
     @IBAction func buttonIsPressed (_ sender: GameButton){
+        var playerSymbol: String
         //display the correct image based on the turn (players) 😺
         switch playerTurn {
         case .player1:
+            playerSymbol = "x"
             //change the image to x😺
             sender.setImage(UIImage(named: "x"), for: .normal)
             sender.isEnabled = false
@@ -53,6 +63,7 @@ class ViewController: UIViewController {
             gameBoardMatrix[sender.row][sender.col] = "x"
             
         case .player2:
+            playerSymbol = "o"
             //change the image to o😺
             sender.setImage(UIImage(named: "o"), for: .normal)
             sender.isEnabled = false
@@ -64,7 +75,7 @@ class ViewController: UIViewController {
             whosTurnNow.text = "Player 1"
         }
         
-        if checkForWins() {
+        if checkForWins(playerSymbol: playerSymbol) {
             switch playerTurn {
             case .player1:
                 whosTurnNow.text = "Player 1 has Won"
@@ -92,6 +103,7 @@ class ViewController: UIViewController {
         print(gameBoardMatrix)
         playerTurn.switchPlayer()
         print("Switched to \"\(playerTurn)\"")
+        turnPassed += 1
     }
 
     @IBAction func newGameReset(_ sender: UIButton) {
@@ -101,6 +113,7 @@ class ViewController: UIViewController {
             gameButton.isEnabled = true
             gameButton.setImage(UIImage(named: "buttonImage"), for: .normal)
         }
+        turnPassed = 0
         
         //change label to player1 😺
         whosTurnNow.text = "Player 1"
@@ -110,16 +123,40 @@ class ViewController: UIViewController {
                            ["","",""],
                            ["","",""]]
          print(gameBoardMatrix)
+        
     }
    
     
-    func checkForWins() -> Bool {
-        //iterate through matrix inner arrays for 3 consecutive x or o
-//        for _ in gameBoardMatrix[sender.row][sender.col] {
-//            if gameBoardMatrix[sender.row][sender.col]{
-//
-//            }
+    func checkForWins(playerSymbol: String) -> Bool {
+        //Horizontal
+        for arr in gameBoardMatrix {
+            var matchNum = 0
+            for symbol in arr {
+                if symbol == playerSymbol { matchNum += 1 }
+            }
+            if matchNum == 3 { return true}
+        }
         
+        //Vertical
+        //row index change by 1, column index remains the same
+        //for loop
+        for columnNum in 0..<gameBoardMatrix.count {
+            var matchNum = 0
+            for rowNum in 0..<gameBoardMatrix.count {
+                if gameBoardMatrix[rowNum][columnNum] == playerSymbol { matchNum += 1 }
+            }
+             if matchNum == 3 { return true}
+        }
+        
+        
+        //Diagonal
+        if (gameBoardMatrix[0][0] == playerSymbol && gameBoardMatrix[1][1] == playerSymbol && gameBoardMatrix[2][2] == playerSymbol) ||
+            (gameBoardMatrix[0][2] == playerSymbol && gameBoardMatrix[1][1] == playerSymbol && gameBoardMatrix[2][0] == playerSymbol) {
+            return true
+        }
+        
+        
+        return false
     }
     
 }
